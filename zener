@@ -1,0 +1,34 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+v_zener = 5.6       # The Zener voltage level (in volts)
+R_series = 100      # Resistor in series with the Zener diode (ohms)
+I_zener_max = 0.05  # Max safe current through Zener (in amps)
+
+Vin = np.linspace(0, 15, 500)  # Creates 500 input voltages from 0 to 15V
+
+def zener_voltage_regulator(Vin, v_zener, R_series, I_zener_max):
+    Vout = np.zeros_like(Vin)  # Prepare output list
+    for i in range(len(Vin)):  # Check every input voltage
+        if Vin[i] > v_zener:
+            I_zener = (Vin[i] - v_zener) / R_series  # Current through Zener
+            if I_zener <= I_zener_max:
+                Vout[i] = v_zener  # Safe → keep output steady
+            else:
+                Vout[i] = np.nan   # Unsafe → show as empty
+        else:
+            Vout[i] = Vin[i]  # Too low → just pass the voltage through
+    return Vout
+
+Vout = zener_voltage_regulator(Vin, v_zener, R_series, I_zener_max)
+
+plt.plot(Vin, Vout)
+plt.title("Zener Diode as Voltage Regulator")
+plt.xlabel("Input Voltage (V)")
+plt.ylabel("Output Voltage (V)")
+plt.grid(True)
+plt.show()
+
+print(f"Zener Voltage: {v_zener} V")
+print(f"Max Current: {I_zener_max} A")
+print(f"Series Resistance: {R_series} Ω")
